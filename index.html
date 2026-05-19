@@ -8,8 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf untuk Fitur Download PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         /* ================= VARIABLES & THEME ================= */
@@ -144,7 +142,7 @@
             align-items: center;
             gap: 8px;
         }
-        .btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
         .btn-full { width: 100%; justify-content: center; margin-top: 10px; }
 
         /* Progress & ATS Score */
@@ -157,7 +155,6 @@
         .progress-bar-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease; }
 
         /* ================= A4 PREVIEW (ATS STYLE) ================= */
-        /* Preview dibungkus dalam container agar bisa diskala dengan rapi */
         .preview-wrapper {
             background: #e2e8f0;
             padding: 20px;
@@ -178,7 +175,7 @@
             padding: 20mm;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            font-family: 'Times New Roman', Times, serif; /* Font Standard ATS */
+            font-family: 'Times New Roman', Times, serif;
             transform-origin: top center;
         }
 
@@ -192,7 +189,6 @@
         
         .cv-body-text { font-size: 11pt; line-height: 1.5; white-space: pre-wrap; }
         
-        /* Profile Image di CV (Opsional untuk ATS, diletakkan rapi jika ada) */
         .cv-img-container { position: absolute; top: 20mm; right: 20mm; width: 30mm; height: 30mm; display: none; }
         .cv-img-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #000;}
 
@@ -233,7 +229,7 @@
             .preview-wrapper { overflow-x: auto; justify-content: flex-start; }
         }
         @media (max-width: 768px) {
-            .nav-links { display: none; } /* Simplified for mobile */
+            .nav-links { display: none; }
             .stats-container { flex-direction: column; }
         }
     </style>
@@ -352,13 +348,13 @@
                 </div>
             </div>
             
-            <button class="btn btn-full" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Download PDF (ATS Friendly)</button>
+            <button class="btn btn-full" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
         </div>
 
         <!-- RIGHT PANEL: LIVE PREVIEW -->
         <div class="right-panel">
             <div class="preview-wrapper">
-                <!-- A4 Element to be exported -->
+                <!-- A4 Element to be exported. ID dipastikan sesuai permintaan. -->
                 <div class="a4-page" id="cv-preview">
                     
                     <!-- Foto Container -->
@@ -488,6 +484,9 @@
         <p>&copy; 2026 CV ATS Modern. Created with clean code.</p>
     </footer>
 
+    <!-- CDN html2pdf.js dipindahkan ke sebelum body -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
         // DOM Elements
@@ -548,7 +547,6 @@
             calculateScore();
         }
 
-        // Attach Event Listeners to all text inputs
         for (let key in inputs) {
             if (key !== 'image') {
                 inputs[key].addEventListener('input', updatePreview);
@@ -575,33 +573,28 @@
             let score = 0;
             let completion = 0;
             
-            // Basic Info (30%)
             if(inputs.name.value.trim()) { score += 5; completion += 10; }
             if(inputs.email.value.trim()) { score += 5; completion += 10; }
             if(inputs.phone.value.trim()) { score += 5; completion += 10; }
             if(inputs.location.value.trim()) { score += 5; }
-            if(inputs.link.value.trim()) { score += 10; } // LinkedIn is a big plus for ATS
+            if(inputs.link.value.trim()) { score += 10; } 
 
-            // Content (70%)
             if(inputs.summary.value.trim().length > 30) { score += 15; completion += 15; }
             if(inputs.exp.value.trim().length > 50) { score += 25; completion += 25; }
             if(inputs.edu.value.trim().length > 10) { score += 15; completion += 15; }
             if(inputs.skills.value.trim().length > 10) { score += 15; completion += 15; }
 
-            // Ensure max 100
             score = Math.min(100, score);
             completion = Math.min(100, completion);
 
-            // Update UI
             document.getElementById('ats-score-text').innerText = `${score}/100`;
             document.getElementById('progress-text').innerText = `${completion}%`;
             document.getElementById('progress-bar').style.width = `${completion}%`;
 
-            // Color code score
             const scoreText = document.getElementById('ats-score-text');
-            if(score < 50) scoreText.style.color = '#ef4444'; // Red
-            else if(score < 80) scoreText.style.color = '#f59e0b'; // Yellow
-            else scoreText.style.color = '#10b981'; // Green
+            if(score < 50) scoreText.style.color = '#ef4444'; 
+            else if(score < 80) scoreText.style.color = '#f59e0b'; 
+            else scoreText.style.color = '#10b981'; 
         }
 
         // --- Theme Toggle (Dark Mode) ---
@@ -619,7 +612,6 @@
             }
         }
 
-        // Check local storage for theme
         if(localStorage.getItem('theme') === 'dark') {
             toggleTheme();
         }
@@ -630,28 +622,71 @@
             parent.classList.toggle('active');
         }
 
-        // --- PDF Download (html2pdf) ---
+        // --- PDF Download Logic (DIPERBAIKI) ---
         function downloadPDF() {
             const element = document.getElementById('cv-preview');
+            
+            // Error handling jika element tidak ditemukan
+            if (!element) {
+                alert('Error: Preview CV tidak ditemukan!');
+                return;
+            }
+
+            // Mencegah scroll issue yang bisa menyebabkan PDF terpotong/blank
+            window.scrollTo(0, 0);
+
+            // Menangkap tombol dan menyimpan teks aslinya
+            const btn = document.querySelector('button[onclick="downloadPDF()"]');
+            const originalText = btn.innerHTML;
+            
+            // Animasi loading & disable tombol
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            btn.style.cursor = 'not-allowed';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses PDF...';
+
+            // Menghilangkan bayangan (box-shadow) sementara agar html2canvas tidak error/blank
+            const originalShadow = element.style.boxShadow;
+            element.style.boxShadow = 'none';
+
+            // Pengaturan Sesuai Instruksi (ATS-CV.pdf, A4, Portrait, Kualitas Tinggi, Scale 2)
             const opt = {
                 margin:       0,
-                filename:     `CV_ATS_${inputs.name.value || 'Baru'}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                filename:     'ATS-CV.pdf',
+                image:        { type: 'jpeg', quality: 1 }, // Kualitas maksimum
+                html2canvas:  { 
+                    scale: 2, // Scale tinggi agar gambar jernih
+                    useCORS: true,
+                    scrollY: 0, 
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Loading state on button
-            const btn = document.querySelector('button[onclick="downloadPDF()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
-            
+            // Eksekusi Download PDF
             html2pdf().set(opt).from(element).save().then(() => {
+                // Kembalikan keadaan seperti semula setelah selesai
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
                 btn.innerHTML = originalText;
+                element.style.boxShadow = originalShadow;
+            }).catch(error => {
+                // Error handling
+                console.error("Kesalahan saat menggenerate PDF:", error);
+                alert('Terjadi kesalahan saat memproses file PDF.');
+                
+                // Kembalikan keadaan tombol
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.innerHTML = originalText;
+                element.style.boxShadow = originalShadow;
             });
         }
 
-        // Init
+        // Init layout pertama kali
         updatePreview();
     </script>
 </body>
