@@ -22,6 +22,7 @@
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
             --success: #10b981;
+            --danger: #ef4444;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s ease;
             --overlay-bg: rgba(15, 23, 42, 0.3);
@@ -103,7 +104,7 @@
         .left-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; }
         .right-panel { flex: 1; position: sticky; top: 100px; height: calc(100vh - 120px); overflow-y: auto; border-radius: 12px;}
 
-        /* ================= FORM UI ================= */
+        /* ================= FORM UI & VALIDATION ================= */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -114,7 +115,7 @@
 
         .card h3 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
         
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 18px; position: relative; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
         
         input, textarea, select {
@@ -126,16 +127,32 @@
             color: var(--text-color);
             transition: var(--transition);
             font-size: 0.95rem;
+            overflow: hidden; /* for auto resize textarea */
         }
 
         input:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
-        textarea { resize: vertical; min-height: 100px; }
+        textarea { resize: none; min-height: 100px; }
+
+        /* Validation UI */
+        .input-error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 24px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -143,8 +160,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 1rem;
         }
-        .btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-full { width: 100%; justify-content: center; margin-top: 10px; }
 
         /* Progress & ATS Score */
@@ -156,7 +175,7 @@
         .progress-bar-bg { background: var(--border-color); height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
         .progress-bar-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-        /* ================= A4 PREVIEW (ATS STYLE) ================= */
+        /* ================= A4 PREVIEW (PREMIUM ATS STYLE) ================= */
         .preview-wrapper {
             background: #e2e8f0;
             padding: 20px;
@@ -171,28 +190,55 @@
         /* Kertas A4 Sesungguhnya */
         .a4-page {
             background: #ffffff;
-            color: #000000;
+            color: #111827; /* Dark gray, lebih soft dari black murni, terlihat premium */
             width: 210mm;
             min-height: 297mm;
-            padding: 20mm;
+            padding: 25mm 20mm; /* Padding standar dokumen profesional */
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            font-family: 'Times New Roman', Times, serif;
+            /* Menggunakan Arial/Helvetica karena sangat disukai sistem ATS & tampak bersih */
+            font-family: Arial, Helvetica, sans-serif; 
             transform-origin: top center;
+            line-height: 1.5;
         }
 
-        /* ATS Typography & Layout */
-        .cv-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-        .cv-name { font-size: 24pt; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .cv-contact { font-size: 11pt; color: #333; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        /* ATS Premium Typography & Layout */
+        .cv-header { text-align: center; margin-bottom: 25px; }
+        .cv-name { font-size: 26pt; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; color: #000; }
+        .cv-title { font-size: 14pt; color: #4b5563; font-weight: 500; margin-bottom: 12px; }
         
-        .cv-section { margin-bottom: 20px; }
-        .cv-section-title { font-size: 14pt; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; margin-bottom: 10px; padding-bottom: 3px; }
+        .cv-contact-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 12px; 
+            font-size: 10pt; 
+            color: #374151; 
+        }
+        .cv-contact-item { display: flex; align-items: center; gap: 5px; }
+        .cv-contact-separator { color: #9ca3af; }
         
-        .cv-body-text { font-size: 11pt; line-height: 1.5; white-space: pre-wrap; }
+        .cv-section { margin-bottom: 22px; }
+        .cv-section-title { 
+            font-size: 13pt; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            color: #000;
+            border-bottom: 1.5px solid #111827; 
+            margin-bottom: 12px; 
+            padding-bottom: 5px; 
+            letter-spacing: 0.5px;
+        }
         
-        .cv-img-container { position: absolute; top: 20mm; right: 20mm; width: 30mm; height: 30mm; display: none; }
-        .cv-img-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #000;}
+        .cv-body-text { 
+            font-size: 10.5pt; 
+            line-height: 1.6; 
+            white-space: pre-wrap; 
+            text-align: justify;
+        }
+        
+        .cv-img-container { position: absolute; top: 25mm; right: 20mm; width: 32mm; height: 32mm; display: none; }
+        .cv-img-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 1px solid #d1d5db;}
 
         /* ================= LANDING SECTIONS ================= */
         .section-padding { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
@@ -239,12 +285,7 @@
             pointer-events: none;
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .premium-modal {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -258,11 +299,7 @@
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-align: center;
         }
-
-        .modal-overlay.active .premium-modal {
-            transform: scale(1) translateY(0);
-        }
-
+        .modal-overlay.active .premium-modal { transform: scale(1) translateY(0); }
         .close-modal {
             position: absolute;
             top: 20px;
@@ -275,7 +312,6 @@
             transition: var(--transition);
         }
         .close-modal:hover { color: var(--text-color); transform: scale(1.1); }
-
         .premium-badge {
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
@@ -289,25 +325,9 @@
             margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
-
-        .modal-features {
-            list-style: none;
-            text-align: left;
-            margin: 25px 0;
-            padding: 0 10px;
-        }
-        .modal-features li {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.95rem;
-        }
-        .modal-features i {
-            color: var(--success);
-            font-size: 1.1rem;
-        }
-
+        .modal-features { list-style: none; text-align: left; margin: 25px 0; padding: 0 10px; }
+        .modal-features li { margin-bottom: 12px; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
+        .modal-features i { color: var(--success); font-size: 1.1rem; }
         .trakteer-btn {
             background: #ca3838;
             color: white;
@@ -326,14 +346,8 @@
             box-shadow: 0 4px 14px rgba(202, 56, 56, 0.3);
             text-decoration: none;
         }
-        .trakteer-btn:hover {
-            background: #b22f2f;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(202, 56, 56, 0.4);
-        }
-        .trakteer-btn img {
-            height: 22px;
-        }
+        .trakteer-btn:hover { background: #b22f2f; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(202, 56, 56, 0.4); }
+        .trakteer-btn img { height: 22px; }
 
         /* Footer */
         footer { text-align: center; padding: 40px 5%; background: var(--card-bg); border-top: 1px solid var(--border-color); margin-top: 50px; }
@@ -404,6 +418,7 @@
                 <div class="form-group">
                     <label>Nama Lengkap</label>
                     <input type="text" id="inp-name" placeholder="John Doe">
+                    <div class="error-msg" id="err-name">Nama minimal 3 huruf dan tidak boleh mengandung angka.</div>
                 </div>
                 <div class="form-group">
                     <label>Posisi / Profesi</label>
@@ -413,10 +428,12 @@
                     <div class="form-group" style="flex:1;">
                         <label>No. Telepon</label>
                         <input type="text" id="inp-phone" placeholder="081234567890">
+                        <div class="error-msg" id="err-phone">Hanya angka, minimal 10 digit.</div>
                     </div>
                     <div class="form-group" style="flex:1;">
                         <label>Email</label>
                         <input type="email" id="inp-email" placeholder="john@email.com">
+                        <div class="error-msg" id="err-email">Masukkan format email yang valid.</div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -435,6 +452,7 @@
                 <div class="form-group">
                     <label>Tuliskan deskripsi singkat tentang pengalaman dan tujuan karir Anda.</label>
                     <textarea id="inp-summary" placeholder="Profesional IT dengan pengalaman 5 tahun di bidang..."></textarea>
+                    <div class="error-msg" id="err-summary">Deskripsi terlalu singkat (minimal 30 karakter).</div>
                 </div>
             </div>
 
@@ -443,7 +461,8 @@
                 <h3><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
                 <div class="form-group">
                     <label>Gunakan bullet points (-) untuk hasil ATS terbaik. Pisahkan setiap item dengan baris baru (Enter).</label>
-                    <textarea id="inp-exp" style="min-height: 200px;" placeholder="PT Teknologi Nusantara | Frontend Developer | Jan 2020 - Sekarang&#10;- Mengembangkan aplikasi web responsif menggunakan React&#10;- Meningkatkan performa website sebesar 30%"></textarea>
+                    <textarea id="inp-exp" placeholder="PT Teknologi Nusantara | Frontend Developer | Jan 2020 - Sekarang&#10;- Mengembangkan aplikasi web responsif menggunakan React&#10;- Meningkatkan performa website sebesar 30%"></textarea>
+                    <div class="error-msg" id="err-exp">Pengalaman kerja minimal 20 karakter.</div>
                 </div>
             </div>
 
@@ -453,6 +472,7 @@
                 <div class="form-group">
                     <label>Institusi | Gelar | Tahun lulus</label>
                     <textarea id="inp-edu" placeholder="Universitas Indonesia | S1 Sistem Informasi | 2015 - 2019&#10;IPK: 3.80/4.00"></textarea>
+                    <div class="error-msg" id="err-edu">Pendidikan minimal 10 karakter.</div>
                 </div>
             </div>
 
@@ -462,10 +482,11 @@
                 <div class="form-group">
                     <label>Pisahkan dengan koma atau baris baru.</label>
                     <textarea id="inp-skills" placeholder="HTML, CSS, JavaScript, React.js, Node.js, Problem Solving"></textarea>
+                    <div class="error-msg" id="err-skills">Masukkan minimal 2 keahlian (pisahkan dengan koma).</div>
                 </div>
             </div>
             
-            <button class="btn btn-full" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
+            <button class="btn btn-full" id="btn-download" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
         </div>
 
         <!-- RIGHT PANEL: LIVE PREVIEW -->
@@ -480,14 +501,27 @@
 
                     <div class="cv-header">
                         <div class="cv-name" id="cv-out-name">NAMA LENGKAP</div>
-                        <div style="font-size: 14pt; margin-bottom: 10px;" id="cv-out-title">Profesi Anda</div>
-                        <div class="cv-contact">
-                            <span id="cv-out-phone">+62 800 0000 000</span> |
-                            <span id="cv-out-email">email@anda.com</span> |
-                            <span id="cv-out-location">Kota, Negara</span>
-                        </div>
-                        <div class="cv-contact" style="margin-top: 5px;">
-                            <span id="cv-out-link">linkedin.com/in/anda</span>
+                        <div class="cv-title" id="cv-out-title">Profesi Anda</div>
+                        
+                        <div class="cv-contact-container">
+                            <div class="cv-contact-item" id="wrap-phone">
+                                <span id="cv-out-phone">+62 800 0000 000</span>
+                            </div>
+                            <span class="cv-contact-separator" id="sep-1">|</span>
+                            
+                            <div class="cv-contact-item" id="wrap-email">
+                                <span id="cv-out-email">email@anda.com</span>
+                            </div>
+                            <span class="cv-contact-separator" id="sep-2">|</span>
+                            
+                            <div class="cv-contact-item" id="wrap-location">
+                                <span id="cv-out-location">Kota, Negara</span>
+                            </div>
+                            <span class="cv-contact-separator" id="sep-3" style="display:none;">|</span>
+                            
+                            <div class="cv-contact-item" id="wrap-link" style="display:none;">
+                                <span id="cv-out-link">linkedin.com/in/anda</span>
+                            </div>
                         </div>
                     </div>
 
@@ -545,7 +579,6 @@
                     <li><i class="fa-solid fa-check"></i> Unlimited PDF Export (No Watermark)</li>
                     <li><i class="fa-solid fa-check"></i> Cover Letter Builder</li>
                 </ul>
-                <!-- Ditambahkan trigger openPremiumModal() -->
                 <button class="btn btn-full" onclick="openPremiumModal()">Upgrade ke Pro</button>
             </div>
         </div>
@@ -618,7 +651,6 @@
                 <li><i class="fa-solid fa-circle-check"></i> <span>Kualitas Ekspor HD Sempurna</span></li>
             </ul>
 
-            <!-- Tombol Trakteer dialihkan langsung ke URL Anda -->
             <a href="https://trakteer.id/karan_raj" target="_blank" class="trakteer-btn">
                 <img src="https://trakteer.id/images/embed/trbtn-icon.png" alt="Trakteer Logo">
                 <span>Upgrade via Trakteer</span>
@@ -671,14 +703,28 @@
             skills: document.getElementById('sec-skills')
         }
 
+        // --- Auto Resize Textarea ---
+        document.querySelectorAll('textarea').forEach(el => {
+            el.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+
         // --- Live Preview Logic ---
         function updatePreview() {
             outputs.name.innerText = inputs.name.value || 'NAMA LENGKAP';
             outputs.title.innerText = inputs.title.value || 'Profesi Anda';
+            
+            // Format Contacts Cleanly
             outputs.phone.innerText = inputs.phone.value || '+62 800 0000 000';
             outputs.email.innerText = inputs.email.value || 'email@anda.com';
             outputs.location.innerText = inputs.location.value || 'Kota, Negara';
-            outputs.link.innerText = inputs.link.value || 'linkedin.com/in/anda';
+            outputs.link.innerText = inputs.link.value;
+
+            // Handle Contact Separators dynamically based on content
+            document.getElementById('wrap-link').style.display = inputs.link.value.trim() ? 'flex' : 'none';
+            document.getElementById('sep-3').style.display = inputs.link.value.trim() ? 'block' : 'none';
             
             outputs.summary.innerText = inputs.summary.value;
             outputs.exp.innerText = inputs.exp.value;
@@ -695,7 +741,13 @@
 
         for (let key in inputs) {
             if (key !== 'image') {
-                inputs[key].addEventListener('input', updatePreview);
+                inputs[key].addEventListener('input', () => {
+                    updatePreview();
+                    // Hilangkan error state saat user mulai mengetik ulang
+                    inputs[key].classList.remove('input-error');
+                    let errMsg = document.getElementById(`err-${key}`);
+                    if(errMsg) errMsg.style.display = 'none';
+                });
             }
         }
 
@@ -758,33 +810,66 @@
             }
         }
 
-        if(localStorage.getItem('theme') === 'dark') {
-            toggleTheme();
-        }
+        if(localStorage.getItem('theme') === 'dark') toggleTheme();
 
-        // --- FAQ Accordion ---
         function toggleFaq(element) {
             const parent = element.parentElement;
             parent.classList.toggle('active');
         }
 
+        // --- VALIDATION LOGIC ---
+        function showError(inputId, errorId) {
+            document.getElementById(inputId).classList.add('input-error');
+            document.getElementById(errorId).style.display = 'block';
+        }
+
+        function validateInputs() {
+            let isValid = true;
+            
+            // Regex patterns
+            const namePattern = /^[a-zA-Z\s\.\-]{3,}$/; // Hanya huruf, spasi, titik, strip. Min 3 char
+            const phonePattern = /^\+?[0-9\s\-]{10,}$/; // Angka, spasi, plus, strip. Min 10 char
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if(!namePattern.test(inputs.name.value.trim())) { showError('inp-name', 'err-name'); isValid = false; }
+            if(!phonePattern.test(inputs.phone.value.trim())) { showError('inp-phone', 'err-phone'); isValid = false; }
+            if(!emailPattern.test(inputs.email.value.trim())) { showError('inp-email', 'err-email'); isValid = false; }
+            
+            if(inputs.summary.value.trim().length > 0 && inputs.summary.value.trim().length < 30) { showError('inp-summary', 'err-summary'); isValid = false; }
+            if(inputs.exp.value.trim().length > 0 && inputs.exp.value.trim().length < 20) { showError('inp-exp', 'err-exp'); isValid = false; }
+            if(inputs.edu.value.trim().length > 0 && inputs.edu.value.trim().length < 10) { showError('inp-edu', 'err-edu'); isValid = false; }
+            
+            // Skill check (minimal 2 skill dipisah koma atau baris baru)
+            if(inputs.skills.value.trim().length > 0) {
+                const skillsArray = inputs.skills.value.split(/,|\n/).filter(s => s.trim().length > 0);
+                if(skillsArray.length < 2) { showError('inp-skills', 'err-skills'); isValid = false; }
+            }
+
+            // Minta user setidaknya mengisi nama sebelum download
+            if(inputs.name.value.trim() === '') { showError('inp-name', 'err-name'); isValid = false; }
+
+            return isValid;
+        }
+
         // --- PDF Download Logic ---
         function downloadPDF() {
+            // Jalankan validasi
+            if(!validateInputs()) {
+                // Scroll ke form paling atas yang error
+                document.querySelector('.input-error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return; // Batalkan proses download
+            }
+
             const element = document.getElementById('cv-preview');
             
-            if (!element) {
-                alert('Error: Preview CV tidak ditemukan!');
-                return;
-            }
+            if (!element) return;
 
             window.scrollTo(0, 0);
 
-            const btn = document.querySelector('button[onclick="downloadPDF()"]');
+            const btn = document.getElementById('btn-download');
             const originalText = btn.innerHTML;
             
             btn.disabled = true;
-            btn.style.opacity = '0.7';
-            btn.style.cursor = 'not-allowed';
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses PDF...';
 
             const originalShadow = element.style.boxShadow;
@@ -792,7 +877,7 @@
 
             const opt = {
                 margin:       0,
-                filename:     'ATS-CV.pdf',
+                filename:     `CV_ATS_${inputs.name.value.trim().replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 1 }, 
                 html2canvas:  { 
                     scale: 2, 
@@ -806,16 +891,12 @@
 
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.style.cursor = 'pointer';
                 btn.innerHTML = originalText;
                 element.style.boxShadow = originalShadow;
             }).catch(error => {
                 console.error("Kesalahan saat menggenerate PDF:", error);
                 alert('Terjadi kesalahan saat memproses file PDF.');
                 btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.style.cursor = 'pointer';
                 btn.innerHTML = originalText;
                 element.style.boxShadow = originalShadow;
             });
@@ -823,25 +904,20 @@
 
         // --- Premium Modal Logic ---
         function openPremiumModal() {
-            const overlay = document.getElementById('premiumModalOverlay');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Mencegah scrolling latar belakang
+            document.getElementById('premiumModalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; 
         }
 
         function closePremiumModal() {
-            const overlay = document.getElementById('premiumModalOverlay');
-            overlay.classList.remove('active');
-            document.body.style.overflow = ''; // Mengaktifkan kembali scrolling latar belakang
+            document.getElementById('premiumModalOverlay').classList.remove('active');
+            document.body.style.overflow = ''; 
         }
 
-        // Menutup modal jika area luar (overlay) diklik
         function closePremiumModalExternal(event) {
-            if (event.target.id === 'premiumModalOverlay') {
-                closePremiumModal();
-            }
+            if (event.target.id === 'premiumModalOverlay') closePremiumModal();
         }
 
-        // Init layout pertama kali
+        // Init
         updatePreview();
     </script>
 </body>
