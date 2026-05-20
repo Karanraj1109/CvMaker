@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaaS ATS Resume Builder</title>
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -127,7 +125,7 @@
             color: var(--text-color);
             transition: var(--transition);
             font-size: 0.95rem;
-            overflow: hidden; /* for auto resize textarea */
+            overflow: hidden;
         }
 
         input:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
@@ -175,7 +173,7 @@
         .progress-bar-bg { background: var(--border-color); height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
         .progress-bar-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-        /* ================= A4 PREVIEW (PREMIUM ATS STYLE) ================= */
+        /* ================= A4 PREVIEW (PREMIUM 2-COLUMN LAYOUT) ================= */
         .preview-wrapper {
             background: #e2e8f0;
             padding: 20px;
@@ -187,58 +185,167 @@
 
         .dark .preview-wrapper { background: #0f172a; }
 
-        /* Kertas A4 Sesungguhnya */
+        /* Kertas A4 Format (2 Kolom) */
         .a4-page {
             background: #ffffff;
-            color: #111827; /* Dark gray, lebih soft dari black murni, terlihat premium */
             width: 210mm;
             min-height: 297mm;
-            padding: 25mm 20mm; /* Padding standar dokumen profesional */
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            /* Menggunakan Arial/Helvetica karena sangat disukai sistem ATS & tampak bersih */
-            font-family: Arial, Helvetica, sans-serif; 
+            font-family: Arial, Helvetica, sans-serif;
             transform-origin: top center;
-            line-height: 1.5;
+            display: flex;
+            flex-direction: row;
         }
 
-        /* ATS Premium Typography & Layout */
-        .cv-header { text-align: center; margin-bottom: 25px; }
-        .cv-name { font-size: 26pt; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; color: #000; }
-        .cv-title { font-size: 14pt; color: #4b5563; font-weight: 500; margin-bottom: 12px; }
-        
-        .cv-contact-container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 12px; 
-            font-size: 10pt; 
-            color: #374151; 
+        /* Kolom Kiri Gelap */
+        .cv-sidebar {
+            width: 70mm; /* ~33% */
+            background-color: #4f5963;
+            color: #ffffff;
+            padding: 40px 20px;
+            box-sizing: border-box;
         }
-        .cv-contact-item { display: flex; align-items: center; gap: 5px; }
-        .cv-contact-separator { color: #9ca3af; }
-        
-        .cv-section { margin-bottom: 22px; }
-        .cv-section-title { 
-            font-size: 13pt; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            color: #000;
-            border-bottom: 1.5px solid #111827; 
-            margin-bottom: 12px; 
-            padding-bottom: 5px; 
-            letter-spacing: 0.5px;
+
+        /* Kolom Kanan Putih */
+        .cv-main {
+            width: 140mm; /* ~67% */
+            padding: 40px 30px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+
+        /* --- Style Kolom Kiri --- */
+        .cv-photo-wrapper {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            margin: 0 auto 35px auto;
+            overflow: hidden;
+            display: none; /* Hide default jika tidak ada foto */
+        }
+        .cv-photo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
-        .cv-body-text { 
-            font-size: 10.5pt; 
-            line-height: 1.6; 
-            white-space: pre-wrap; 
+        .cv-sidebar-title {
+            font-size: 11pt;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+
+        .cv-contact-item {
+            display: flex;
+            margin-bottom: 18px;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+        .cv-contact-item i {
+            width: 24px;
+            margin-top: 3px;
+            font-size: 10pt;
+            color: #cbd5e1;
+        }
+        .cv-contact-text strong {
+            display: block;
+            font-size: 9.5pt;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+        
+        /* --- Style Kolom Kanan --- */
+        .cv-header {
+            margin-bottom: 20px;
+        }
+        .cv-name {
+            font-size: 26pt;
+            font-weight: 700;
+            color: #333333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        .cv-summary {
+            font-size: 9.5pt;
+            color: #555555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 30px;
             text-align: justify;
         }
+
+        .cv-section {
+            margin-bottom: 10px;
+        }
+        .cv-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .cv-icon-circle {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #333333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 11pt;
+            color: #333333;
+            background: #ffffff;
+            z-index: 2;
+        }
+        .cv-section-title {
+            font-size: 12pt;
+            font-weight: 700;
+            color: #333333;
+            text-transform: uppercase;
+        }
         
-        .cv-img-container { position: absolute; top: 25mm; right: 20mm; width: 32mm; height: 32mm; display: none; }
-        .cv-img-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 1px solid #d1d5db;}
+        /* Timeline styling */
+        .cv-timeline-wrapper {
+            position: relative;
+            padding-left: 47px; /* Spacing sejajar dengan teks judul setelah icon bulat */
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+        .cv-section:last-child .cv-timeline-wrapper {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        /* Garis vertikal timeline */
+        .cv-timeline-wrapper::before {
+            content: '';
+            position: absolute;
+            left: 15px; /* Center dari lingkaran (32px / 2 = 16 - 1 = 15) */
+            top: -15px; 
+            bottom: 0;
+            width: 1px;
+            background-color: #9ca3af;
+            z-index: 1;
+        }
+        .cv-section:last-child .cv-timeline-wrapper::before {
+            display: none; /* Garis hilang di section terakhir jika mau rapi */
+        }
+
+        .cv-body-text {
+            font-size: 9.5pt;
+            color: #444444;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
 
         /* ================= LANDING SECTIONS ================= */
         .section-padding { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
@@ -367,7 +474,6 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <nav class="glass">
         <div class="logo">
             <i class="fa-solid fa-file-contract"></i> CV ATS Modern
@@ -382,12 +488,9 @@
         </div>
     </nav>
 
-    <!-- BUILDER WORKSPACE -->
     <div class="builder-container" id="builder">
         
-        <!-- LEFT PANEL: FORM -->
         <div class="left-panel">
-            <!-- Stats -->
             <div class="stats-container">
                 <div class="stat-box glass card">
                     <div class="stat-label">Profil Selesai</div>
@@ -403,16 +506,14 @@
                 </div>
             </div>
 
-            <!-- Settings -->
             <div class="card">
                 <h3><i class="fa-solid fa-gear"></i> Pengaturan Resume</h3>
                 <div class="form-group">
-                    <label>Pas Foto (Opsional - Beberapa ATS tidak menyarankan foto)</label>
+                    <label>Pas Foto (Maks. 2MB)</label>
                     <input type="file" id="inp-image" accept="image/*">
                 </div>
             </div>
 
-            <!-- Personal Info -->
             <div class="card">
                 <h3><i class="fa-solid fa-user"></i> Informasi Pribadi</h3>
                 <div class="form-group">
@@ -446,7 +547,6 @@
                 </div>
             </div>
 
-            <!-- Professional Summary -->
             <div class="card">
                 <h3><i class="fa-solid fa-pen-nib"></i> Ringkasan Profesional</h3>
                 <div class="form-group">
@@ -456,104 +556,129 @@
                 </div>
             </div>
 
-            <!-- Experience -->
             <div class="card">
                 <h3><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
                 <div class="form-group">
                     <label>Gunakan bullet points (-) untuk hasil ATS terbaik. Pisahkan setiap item dengan baris baru (Enter).</label>
-                    <textarea id="inp-exp" placeholder="PT Teknologi Nusantara | Frontend Developer | Jan 2020 - Sekarang&#10;- Mengembangkan aplikasi web responsif menggunakan React&#10;- Meningkatkan performa website sebesar 30%"></textarea>
+                    <textarea id="inp-exp" placeholder="Jan 2020 - Sekarang | Frontend Developer&#10;PT Teknologi Nusantara, Jakarta&#10;- Mengembangkan aplikasi web responsif&#10;- Meningkatkan performa website sebesar 30%"></textarea>
                     <div class="error-msg" id="err-exp">Pengalaman kerja minimal 20 karakter.</div>
                 </div>
             </div>
 
-            <!-- Education -->
             <div class="card">
                 <h3><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
                 <div class="form-group">
                     <label>Institusi | Gelar | Tahun lulus</label>
-                    <textarea id="inp-edu" placeholder="Universitas Indonesia | S1 Sistem Informasi | 2015 - 2019&#10;IPK: 3.80/4.00"></textarea>
+                    <textarea id="inp-edu" placeholder="Jul 2015 - Ags 2019 | S1 Sistem Informasi&#10;Universitas Indonesia&#10;- Lulus dengan Predikat Cumlaude&#10;- IPK: 3.80/4.00"></textarea>
                     <div class="error-msg" id="err-edu">Pendidikan minimal 10 karakter.</div>
                 </div>
             </div>
 
-            <!-- Skills -->
             <div class="card">
                 <h3><i class="fa-solid fa-wrench"></i> Keahlian (Skills)</h3>
                 <div class="form-group">
                     <label>Pisahkan dengan koma atau baris baru.</label>
-                    <textarea id="inp-skills" placeholder="HTML, CSS, JavaScript, React.js, Node.js, Problem Solving"></textarea>
-                    <div class="error-msg" id="err-skills">Masukkan minimal 2 keahlian (pisahkan dengan koma).</div>
+                    <textarea id="inp-skills" placeholder="Google Analytics&#10;Google Adwords&#10;Microsoft Word&#10;Microsoft Excel"></textarea>
+                    <div class="error-msg" id="err-skills">Masukkan minimal 2 keahlian (pisahkan dengan koma atau enter).</div>
                 </div>
             </div>
             
             <button class="btn btn-full" id="btn-download" onclick="downloadPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
         </div>
 
-        <!-- RIGHT PANEL: LIVE PREVIEW -->
         <div class="right-panel">
             <div class="preview-wrapper">
                 <div class="a4-page" id="cv-preview">
                     
-                    <!-- Foto Container -->
-                    <div class="cv-img-container" id="cv-out-img-wrapper">
-                        <img id="cv-out-img" src="" alt="Profile">
-                    </div>
+                    <div class="cv-sidebar">
+                        <div class="cv-photo-wrapper" id="cv-out-img-wrapper">
+                            <img id="cv-out-img" src="" alt="Profile">
+                        </div>
 
-                    <div class="cv-header">
-                        <div class="cv-name" id="cv-out-name">NAMA LENGKAP</div>
-                        <div class="cv-title" id="cv-out-title">Profesi Anda</div>
+                        <div class="cv-sidebar-title">PRIBADI</div>
                         
-                        <div class="cv-contact-container">
-                            <div class="cv-contact-item" id="wrap-phone">
-                                <span id="cv-out-phone">+62 800 0000 000</span>
+                        <div class="cv-contact-item">
+                            <i class="fa-solid fa-user"></i>
+                            <div class="cv-contact-text">
+                                <strong>Nama</strong>
+                                <span id="cv-sidebar-name">Wahyu Kurniawan</span>
                             </div>
-                            <span class="cv-contact-separator" id="sep-1">|</span>
-                            
-                            <div class="cv-contact-item" id="wrap-email">
-                                <span id="cv-out-email">email@anda.com</span>
+                        </div>
+
+                        <div class="cv-contact-item">
+                            <i class="fa-solid fa-house"></i>
+                            <div class="cv-contact-text">
+                                <strong>Alamat</strong>
+                                <span id="cv-out-location">Jl. Diponegoro 100B, Jakarta</span>
                             </div>
-                            <span class="cv-contact-separator" id="sep-2">|</span>
-                            
-                            <div class="cv-contact-item" id="wrap-location">
-                                <span id="cv-out-location">Kota, Negara</span>
+                        </div>
+
+                        <div class="cv-contact-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <div class="cv-contact-text">
+                                <strong>Nomor telepon</strong>
+                                <span id="cv-out-phone">081234567890</span>
                             </div>
-                            <span class="cv-contact-separator" id="sep-3" style="display:none;">|</span>
-                            
-                            <div class="cv-contact-item" id="wrap-link" style="display:none;">
+                        </div>
+
+                        <div class="cv-contact-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div class="cv-contact-text">
+                                <strong>Email</strong>
+                                <span id="cv-out-email">test@gmail.com</span>
+                            </div>
+                        </div>
+
+                        <div class="cv-contact-item" id="wrap-link" style="display:none;">
+                            <i class="fa-solid fa-link"></i>
+                            <div class="cv-contact-text">
+                                <strong>LinkedIn / Portofolio</strong>
                                 <span id="cv-out-link">linkedin.com/in/anda</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Summary -->
-                    <div class="cv-section" id="sec-summary">
-                        <div class="cv-section-title">Professional Summary</div>
-                        <div class="cv-body-text" id="cv-out-summary">Tuliskan ringkasan profesional Anda di form sebelah kiri. Ringkasan ini akan otomatis terupdate secara real-time di sini.</div>
-                    </div>
+                    <div class="cv-main">
+                        <div class="cv-header">
+                            <div class="cv-name" id="cv-out-name">WAHYU KURNIAWAN</div>
+                            <div class="cv-summary"><span id="cv-out-title" style="font-weight:bold; display:none;"></span><span id="cv-out-summary">Digital marketer yang siap mencapai target, dengan pengalaman lebih dari 3 tahun dalam mendorong inisiatif promosi. Ahli marketing online, lead generation, dan lead nurturing...</span></div>
+                        </div>
 
-                    <!-- Experience -->
-                    <div class="cv-section" id="sec-exp">
-                        <div class="cv-section-title">Work Experience</div>
-                        <div class="cv-body-text" id="cv-out-exp">Detail pengalaman kerja Anda akan muncul di sini.</div>
-                    </div>
+                        <div class="cv-section" id="sec-exp">
+                            <div class="cv-section-header">
+                                <div class="cv-icon-circle"><i class="fa-solid fa-briefcase"></i></div>
+                                <div class="cv-section-title">PENGALAMAN KERJA</div>
+                            </div>
+                            <div class="cv-timeline-wrapper">
+                                <div class="cv-body-text" id="cv-out-exp">Detail pengalaman...</div>
+                            </div>
+                        </div>
 
-                    <!-- Education -->
-                    <div class="cv-section" id="sec-edu">
-                        <div class="cv-section-title">Education</div>
-                        <div class="cv-body-text" id="cv-out-edu">Detail pendidikan Anda akan muncul di sini.</div>
-                    </div>
+                        <div class="cv-section" id="sec-edu">
+                            <div class="cv-section-header">
+                                <div class="cv-icon-circle"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="cv-section-title">PENDIDIKAN DAN KUALIFIKASI</div>
+                            </div>
+                            <div class="cv-timeline-wrapper">
+                                <div class="cv-body-text" id="cv-out-edu">Detail pendidikan...</div>
+                            </div>
+                        </div>
 
-                    <!-- Skills -->
-                    <div class="cv-section" id="sec-skills">
-                        <div class="cv-section-title">Skills & Competencies</div>
-                        <div class="cv-body-text" id="cv-out-skills">Daftar keahlian Anda akan muncul di sini.</div>
+                        <div class="cv-section" id="sec-skills">
+                            <div class="cv-section-header">
+                                <div class="cv-icon-circle"><i class="fa-solid fa-computer-mouse"></i></div>
+                                <div class="cv-section-title">KEAHLIAN</div>
+                            </div>
+                            <div class="cv-timeline-wrapper">
+                                <div class="cv-body-text" id="cv-out-skills">Daftar keahlian...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PRICING SECTION -->
     <div class="section-padding" id="pricing">
         <h2 class="section-title">Pilih Paket Anda</h2>
         <div class="pricing-grid">
@@ -584,7 +709,6 @@
         </div>
     </div>
 
-    <!-- FAQ SECTION -->
     <div class="section-padding" id="faq">
         <h2 class="section-title">Pertanyaan Umum (FAQ)</h2>
         <div style="max-width: 800px; margin: 0 auto;">
@@ -603,7 +727,6 @@
         </div>
     </div>
 
-    <!-- TESTIMONIALS -->
     <div class="section-padding" style="background: var(--card-bg);">
         <h2 class="section-title">Kata Mereka</h2>
         <div class="testi-grid">
@@ -630,7 +753,6 @@
         </div>
     </div>
 
-    <!-- PREMIUM MODAL OVERLAY & CONTENT -->
     <div class="modal-overlay" id="premiumModalOverlay" onclick="closePremiumModalExternal(event)">
         <div class="premium-modal">
             <button class="close-modal" onclick="closePremiumModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -663,10 +785,8 @@
         <p>&copy; 2026 CV ATS Modern. Created with clean code.</p>
     </footer>
 
-    <!-- CDN html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
         // DOM Elements
         const inputs = {
@@ -685,6 +805,7 @@
 
         const outputs = {
             name: document.getElementById('cv-out-name'),
+            nameSidebar: document.getElementById('cv-sidebar-name'), // Ditambahkan untuk layout baru
             title: document.getElementById('cv-out-title'),
             phone: document.getElementById('cv-out-phone'),
             email: document.getElementById('cv-out-email'),
@@ -713,25 +834,26 @@
 
         // --- Live Preview Logic ---
         function updatePreview() {
-            outputs.name.innerText = inputs.name.value || 'NAMA LENGKAP';
-            outputs.title.innerText = inputs.title.value || 'Profesi Anda';
+            // Binding teks ke elemen HTML Layout 2 Kolom Baru
+            outputs.name.innerText = inputs.name.value || 'WAHYU KURNIAWAN';
+            if(outputs.nameSidebar) outputs.nameSidebar.innerText = inputs.name.value || 'Wahyu Kurniawan';
             
-            // Format Contacts Cleanly
-            outputs.phone.innerText = inputs.phone.value || '+62 800 0000 000';
-            outputs.email.innerText = inputs.email.value || 'email@anda.com';
-            outputs.location.innerText = inputs.location.value || 'Kota, Negara';
+            outputs.title.innerText = inputs.title.value ? inputs.title.value + ' - ' : '';
+            outputs.title.style.display = inputs.title.value.trim() ? 'inline' : 'none';
+
+            outputs.phone.innerText = inputs.phone.value || '081234567890';
+            outputs.email.innerText = inputs.email.value || 'test@gmail.com';
+            outputs.location.innerText = inputs.location.value || 'Jl. Diponegoro 100B, Jakarta';
             outputs.link.innerText = inputs.link.value;
 
-            // Handle Contact Separators dynamically based on content
             document.getElementById('wrap-link').style.display = inputs.link.value.trim() ? 'flex' : 'none';
-            document.getElementById('sep-3').style.display = inputs.link.value.trim() ? 'block' : 'none';
             
-            outputs.summary.innerText = inputs.summary.value;
+            outputs.summary.innerText = inputs.summary.value || 'Digital marketer yang siap mencapai target, dengan pengalaman lebih dari 3 tahun dalam mendorong inisiatif promosi. Ahli marketing online, lead generation, dan lead nurturing...';
+            
             outputs.exp.innerText = inputs.exp.value;
             outputs.edu.innerText = inputs.edu.value;
             outputs.skills.innerText = inputs.skills.value;
 
-            sections.summary.style.display = inputs.summary.value.trim() ? 'block' : 'none';
             sections.exp.style.display = inputs.exp.value.trim() ? 'block' : 'none';
             sections.edu.style.display = inputs.edu.value.trim() ? 'block' : 'none';
             sections.skills.style.display = inputs.skills.value.trim() ? 'block' : 'none';
@@ -743,7 +865,6 @@
             if (key !== 'image') {
                 inputs[key].addEventListener('input', () => {
                     updatePreview();
-                    // Hilangkan error state saat user mulai mengetik ulang
                     inputs[key].classList.remove('input-error');
                     let errMsg = document.getElementById(`err-${key}`);
                     if(errMsg) errMsg.style.display = 'none';
@@ -826,9 +947,8 @@
         function validateInputs() {
             let isValid = true;
             
-            // Regex patterns
-            const namePattern = /^[a-zA-Z\s\.\-]{3,}$/; // Hanya huruf, spasi, titik, strip. Min 3 char
-            const phonePattern = /^\+?[0-9\s\-]{10,}$/; // Angka, spasi, plus, strip. Min 10 char
+            const namePattern = /^[a-zA-Z\s\.\-]{3,}$/; 
+            const phonePattern = /^\+?[0-9\s\-]{10,}$/; 
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if(!namePattern.test(inputs.name.value.trim())) { showError('inp-name', 'err-name'); isValid = false; }
@@ -839,13 +959,11 @@
             if(inputs.exp.value.trim().length > 0 && inputs.exp.value.trim().length < 20) { showError('inp-exp', 'err-exp'); isValid = false; }
             if(inputs.edu.value.trim().length > 0 && inputs.edu.value.trim().length < 10) { showError('inp-edu', 'err-edu'); isValid = false; }
             
-            // Skill check (minimal 2 skill dipisah koma atau baris baru)
             if(inputs.skills.value.trim().length > 0) {
                 const skillsArray = inputs.skills.value.split(/,|\n/).filter(s => s.trim().length > 0);
                 if(skillsArray.length < 2) { showError('inp-skills', 'err-skills'); isValid = false; }
             }
 
-            // Minta user setidaknya mengisi nama sebelum download
             if(inputs.name.value.trim() === '') { showError('inp-name', 'err-name'); isValid = false; }
 
             return isValid;
@@ -853,17 +971,13 @@
 
         // --- PDF Download Logic ---
         function downloadPDF() {
-            // Jalankan validasi
             if(!validateInputs()) {
-                // Scroll ke form paling atas yang error
                 document.querySelector('.input-error').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return; // Batalkan proses download
+                return; 
             }
 
             const element = document.getElementById('cv-preview');
-            
             if (!element) return;
-
             window.scrollTo(0, 0);
 
             const btn = document.getElementById('btn-download');
